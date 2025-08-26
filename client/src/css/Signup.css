@@ -1,0 +1,92 @@
+/* Signup.css */
+
+/* Title */
+.signup-title {
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+/* Reuse styles from login */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+input[type="text"] {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background-color: var(--color-surface);
+    font-size: 1rem;
+    color: var(--color-text-primary);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.2);
+}
+
+/* Password wrappers */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper input {
+    padding-right: 3rem;
+}
+
+.toggle-icon {
+    position: absolute;
+    right: 1rem;
+    cursor: pointer;
+    user-select: none;
+    font-size: 1.1rem;
+    color: var(--color-text-secondary);
+}
+
+/* Terms checkbox */
+.terms {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+}
+
+.terms a {
+    color: var(--color-secondary);
+    text-decoration: none;
+}
+
+.terms a:hover {
+    text-decoration: underline;
+}
+
+/* Submit button */
+.signup-btn {
+    background-color: var(--color-primary);
+    color: var(--color-text-on-primary);
+    border: none;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    box-shadow: var(--shadow-soft);
+}
+
+.signup-btn:hover {
+    background-color: #2541a1;
+}

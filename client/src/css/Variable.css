@@ -1,0 +1,12 @@
+:root {
+  --primary-color: #3b82f6; /* Tailwind's blue-500 */
+  --secondary-color: #1e40af; /* Tailwind's blue-900 */
+  --background-color: #f9fafb;
+  --card-bg: #ffffff;
+  --text-color: #111827;
+
+  --radius: 0.75rem;
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  --font-family: 'Inter', sans-serif;
+}
