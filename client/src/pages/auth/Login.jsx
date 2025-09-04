@@ -1,89 +1,120 @@
-import { useNavigate } from 'react-router-dom';
-import '@css/Login.css';
+// src/pages/Login.jsx
+
+import { useNavigate, Link } from 'react-router-dom';
 import { useState } from 'react';
-import { loginUser } from '../../services/auth';
+import { loginUser } from '@/services/authService';
+import { useAuth } from '@/context/AuthProvider';
+import Button from '@/components/common/Button';
+import { routes } from '@/routes/route';
+
+import { FiEye, FiEyeOff } from 'react-icons/fi';
+import '@/css/Login.css';
 
 function Login() {
     const navigate = useNavigate();
+    const { login } = useAuth();
+
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState("");
-    const [form , setForm ] = useState({
-        email: "",
-        password: "",
-    })
+    const [message, setMessage] = useState('');
+
+    const [form, setForm] = useState({
+        email: '',
+        password: '',
+    });
 
     const handleChange = (e) => {
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value
-        })
-    }
+        const { name, value } = e.target;
+        setForm((prev) => ({ ...prev, [name]: value }));
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-         setLoading(true);
+        setLoading(true);
+        setMessage('');
+
         try {
+            console.log('Form submitted:', form);
+
             const data = await loginUser(form);
-            localStorage.setItem('user', JSON.stringify(data));
-            setMessage("✅ Logged in successfully. Token: " + data.token);
-            navigate('/dashboard');
+            const { token, ...user } = data;
+            login(token, user);
+            navigate(routes.dashboard);
         } catch (error) {
-            setMessage("❌ " + error.message);
-        } finally{
-            setLoading(false)
+            console.error('Login error:', error.response?.data || error);
+            setMessage(
+                '❌ ' + (error?.response?.data?.message || error.message),
+            );
+        } finally {
+            setLoading(false);
         }
-    }
+    };
 
     return (
-        <>
-            <h2 className="login-title">Login</h2>
+        <div className="login-container">
+            <h2 className="login-title">Welcome Back</h2>
+            <p className="login-subtitle">
+                Log in to continue your savings journey
+            </p>
 
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="you@example.com"
-                    onChange={handleChange}
-                    value={form.email}
-                    required
-                />
+            <form onSubmit={handleSubmit} className="login-form">
+                <div className="form-group">
+                    <label>Email Address</label>
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="you@example.com"
+                        onChange={handleChange}
+                        value={form.email}
+                        required
+                    />
+                </div>
 
-                <div className="input-group password-group">
-                    <div className="password-wrapper">
+                <div className="form-group">
+                    <label>Password</label>
+                    <div className="password-input">
                         <input
                             name="password"
-                            type={showPassword ? "text" : "password"}
-                            placeholder="Enter password"
+                            type={showPassword ? 'text' : 'password'}
+                            placeholder="Enter your password"
                             onChange={handleChange}
                             value={form.password}
                             required
                         />
-                        <span
-                            className="toggle-icon"
-                            onClick={() => setShowPassword(!showPassword)}
-                        >
-                            {showPassword ? "🙈" : "👁️"}
+                        <span onClick={() => setShowPassword((prev) => !prev)}>
+                            {showPassword ? <FiEyeOff /> : <FiEye />}
                         </span>
                     </div>
                 </div>
 
-                <div className="form-options">
-                    <label className="remember-me">
-                        <input type="checkbox" />
-                        <span className="remember-label">Remember me</span>
-                    </label>
-                    <a href="/forgot-password" className="forgot-password">
+                <div className="form-options solo-link">
+                    <Link
+                        to={routes.forgotPassword}
+                        className="forgot-password">
                         Forgot Password?
-                    </a>
+                    </Link>
                 </div>
 
-                <button type="submit" className="login-btn" disabled={loading}>
-                    {loading ? "Logging in..." : "Login"}
-                </button>
+                <Button
+                    type="submit"
+                    variant="primary"
+                    size="md"
+                    fullWidth
+                    loading={loading} // 👈 handles loader inside
+                >
+                    Login
+                </Button>
+
                 {message && <p className="login-message">{message}</p>}
             </form>
-        </>
+
+            <div className="signup-link">
+                <p>
+                    Don't have an account?{' '}
+                    <Link to={routes.signup}>Sign up</Link>
+                </p>
+            </div>
+        </div>
     );
 }
 

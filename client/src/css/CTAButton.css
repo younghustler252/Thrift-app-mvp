@@ -1,0 +1,32 @@
+/* styles/cta.css */
+.cta-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.cta-btn:hover {
+    background: #f9fafb;
+    transform: translateY(-2px);
+}
+
+.cta-icon {
+    width: 28px;
+    height: 28px;
+    color: #2563eb; /* blue shade */
+    margin-bottom: 6px;
+}
+
+.cta-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #111827;
+}

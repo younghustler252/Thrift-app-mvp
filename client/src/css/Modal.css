@@ -1,0 +1,58 @@
+/* Background overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+/* Modal box */
+.modal-container {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    width: 400px;
+    max-width: 95%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Title */
+.modal-title {
+    margin: 0 0 15px 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Body */
+.modal-body {
+    margin-bottom: 20px;
+    font-size: 1rem;
+    color: #444;
+}
+
+/* Footer (buttons) */
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

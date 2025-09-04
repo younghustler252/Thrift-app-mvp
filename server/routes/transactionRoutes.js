@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const {
-  getAllTransactions,
-  getMyTransactions,
-  getTransactionById
+    getAllTransactions,
+    getMyTransactions,
+    getTransactionById,
 } = require('../controllers/transactionController');
 
 const { protect } = require('../middleware/authMiddleware');

@@ -1,0 +1,23 @@
+/* MainLayout.css */
+.main-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f9f9f9; /* subtle background */
+}
+
+.main-content {
+    flex: 1;
+    padding-bottom: 60px; /* prevent content from hiding behind navbar */
+    overflow-y: auto;
+}
+
+/* Optional media query for larger screens */
+@media (min-width: 768px) {
+    .main-layout {
+        max-width: 600px;
+        margin: 0 auto;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+    }
+}

@@ -1,0 +1,108 @@
+/* Filter buttons */
+.groups-filters {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.groups-filters button {
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.groups-filters button:hover {
+    background: #eee;
+}
+
+.groups-filters button.active {
+    background: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+.groups-container {
+    padding: 1rem;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.groups-loading,
+.groups-error,
+.groups-empty {
+    text-align: center;
+    font-size: 1rem;
+    color: #666;
+    margin-top: 2rem;
+}
+
+/* List */
+.groups-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Each group card */
+.group-card {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 1rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+}
+
+.group-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Title */
+.group-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+    color: #222;
+}
+
+/* Description */
+.group-description {
+    font-size: 0.95rem;
+    color: #555;
+    margin-bottom: 0.75rem;
+}
+
+/* Meta info */
+.group-meta {
+    font-size: 0.85rem;
+    color: #777;
+    margin-bottom: 0.25rem;
+}
+
+/* Tags for Member / Creator */
+.group-tag {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-top: 0.5rem;
+}
+
+.group-tag.member {
+    background: #e0f2ff;
+    color: #007bff;
+}
+
+.group-tag.creator {
+    background: #e6ffed;
+    color: #28a745;
+}

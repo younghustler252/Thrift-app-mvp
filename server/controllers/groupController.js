@@ -1,34 +1,63 @@
-const asyncHandler = require("express-async-handler");
-const Group = require("../models/Group");
-const generateInviteToken = require("../utils/generateInviteToken");
+const asyncHandler = require('express-async-handler');
+const Group = require('../models/Group');
+const generateInviteToken = require('../utils/generateInviteToken');
 
+// @desc    [ADMIN] Get all groups in the system
+// @route   GET /api/admin/groups
+// @access  Private/Admin
+const getAllGroups = asyncHandler(async (req, res) => {
+    const userId = req.user._id;
+
+    const groups = await Group.find({
+        isDeleted: false,
+    })
+        .populate('createdBy', 'name email')
+        .populate('members.user', 'name email');
+
+    res.json({
+        total: groups.length,
+        groups,
+    });
+    console.log('All groups fetched:', groups.length);
+});
 
 // @desc    Create new group
 // @route   POST /api/groups
 // @access  Private
 const createGroup = asyncHandler(async (req, res) => {
-    const { name, description, contributionType, contributionAmount, frequency, startDate, privacy } = req.body;
+    const {
+        name,
+        description,
+        contributionType,
+        contributionAmount,
+        frequency,
+        startDate,
+        privacy,
+    } = req.body;
 
     if (!name || !contributionType || !frequency || !startDate) {
         res.status(400);
-        throw new Error("Please provide all required fields");
+        throw new Error('Please provide all required fields');
     }
 
-    if (contributionType === "fixed" && !contributionAmount) {
+    if (contributionType === 'fixed' && !contributionAmount) {
         res.status(400);
-        throw new Error("Fixed contribution groups must have a contribution amount");
+        throw new Error(
+            'Fixed contribution groups must have a contribution amount',
+        );
     }
 
     const group = new Group({
         name,
         description,
         contributionType,
-        contributionAmount: contributionType === "fixed" ? contributionAmount : undefined,
+        contributionAmount:
+            contributionType === 'fixed' ? contributionAmount : undefined,
         frequency,
         startDate,
-        privacy: privacy || "public",
+        privacy: privacy || 'public',
         createdBy: req.user._id,
-        members: [{ user: req.user._id, role: "creator" }],
+        members: [{ user: req.user._id, role: 'creator' }],
         rotationOrder: [req.user._id],
     });
 
@@ -36,36 +65,50 @@ const createGroup = asyncHandler(async (req, res) => {
     res.status(201).json(createdGroup);
 });
 
-
-// @desc    Get all groups user belongs to
+// @desc    Get all groups user belongs to OR created
 // @route   GET /api/groups
 // @access  Private
 const getGroups = asyncHandler(async (req, res) => {
-    const groups = await Group.find({ "members.user": req.user._id, isDeleted: false });
+    const groups = await Group.find({
+        $and: [
+            { isDeleted: false },
+            {
+                $or: [
+                    { 'members.user': req.user._id },
+                    { createdBy: req.user._id },
+                ],
+            },
+        ],
+    });
+
+    console.log('Authenticated user ID:', req.user._id);
     res.json(groups);
 });
-
 
 // @desc    Get group by ID
 // @route   GET /api/groups/:id
 // @access  Private
 const getGroupById = asyncHandler(async (req, res) => {
-    const group = await Group.findById(req.params.id).populate("members.user", "name email");
+    const group = await Group.findById(req.params.id).populate(
+        'members.user',
+        'name email',
+    );
 
     if (!group || group.isDeleted) {
         res.status(404);
-        throw new Error("Group not found");
+        throw new Error('Group not found');
     }
 
-    const isMember = group.members.some(m => m.user._id.toString() === req.user._id.toString());
+    const isMember = group.members.some(
+        (m) => m.user._id.toString() === req.user._id.toString(),
+    );
     if (!isMember) {
         res.status(403);
-        throw new Error("Not authorized to view this group");
+        throw new Error('Not authorized to view this group');
     }
 
     res.json(group);
 });
-
 
 // @desc    Join a group
 // @route   POST /api/groups/:id/join
@@ -75,30 +118,31 @@ const joinGroup = asyncHandler(async (req, res) => {
 
     if (!group || group.isDeleted) {
         res.status(404);
-        throw new Error("Group not found");
+        throw new Error('Group not found');
     }
 
     // ✅ Enforce privacy
-    if (group.privacy === "private") {
+    if (group.privacy === 'private') {
         res.status(403);
-        throw new Error("This group is private. You must be invited to join.");
+        throw new Error('This group is private. You must be invited to join.');
     }
 
     // Check if already a member
-    const isMember = group.members.some(m => m.user.toString() === req.user._id.toString());
+    const isMember = group.members.some(
+        (m) => m.user.toString() === req.user._id.toString(),
+    );
     if (isMember) {
         res.status(400);
-        throw new Error("User already a member of this group");
+        throw new Error('User already a member of this group');
     }
 
     // Add user to members + rotation
-    group.members.push({ user: req.user._id, role: "member" });
+    group.members.push({ user: req.user._id, role: 'member' });
     group.rotationOrder.push(req.user._id);
 
     await group.save();
-    res.status(201).json({ message: "Joined group successfully" });
+    res.status(201).json({ message: 'Joined group successfully' });
 });
-
 
 // @desc    Update group (creator only)
 // @route   PUT /api/groups/:id
@@ -108,12 +152,12 @@ const updateGroup = asyncHandler(async (req, res) => {
 
     if (!group || group.isDeleted) {
         res.status(404);
-        throw new Error("Group not found");
+        throw new Error('Group not found');
     }
 
     if (group.createdBy.toString() !== req.user._id.toString()) {
         res.status(403);
-        throw new Error("Only the group creator can update the group");
+        throw new Error('Only the group creator can update the group');
     }
 
     // Restrict critical fields if members already joined
@@ -125,13 +169,15 @@ const updateGroup = asyncHandler(async (req, res) => {
             req.body.startDate
         ) {
             res.status(400);
-            throw new Error("Cannot update contribution details once members have joined");
+            throw new Error(
+                'Cannot update contribution details once members have joined',
+            );
         }
     }
 
     // ✅ Whitelist allowed fields
-    const allowedUpdates = ["name", "description", "privacy", "status"];
-    allowedUpdates.forEach(field => {
+    const allowedUpdates = ['name', 'description', 'privacy', 'status'];
+    allowedUpdates.forEach((field) => {
         if (req.body[field] !== undefined) {
             group[field] = req.body[field];
         }
@@ -141,7 +187,6 @@ const updateGroup = asyncHandler(async (req, res) => {
     res.json(updatedGroup);
 });
 
-
 // @desc    Archive group (soft delete)
 // @route   DELETE /api/groups/:id
 // @access  Private
@@ -150,21 +195,20 @@ const deleteGroup = asyncHandler(async (req, res) => {
 
     if (!group || group.isDeleted) {
         res.status(404);
-        throw new Error("Group not found");
+        throw new Error('Group not found');
     }
 
     if (group.createdBy.toString() !== req.user._id.toString()) {
         res.status(403);
-        throw new Error("Only the group creator can delete the group");
+        throw new Error('Only the group creator can delete the group');
     }
 
     group.isDeleted = true;
-    group.status = "archived";
+    group.status = 'archived';
 
     await group.save();
-    res.json({ message: "Group archived successfully" });
+    res.json({ message: 'Group archived successfully' });
 });
-
 
 // @desc    Create invite token
 // @route   POST /api/groups/:groupId/invite
@@ -174,12 +218,12 @@ const createInvite = asyncHandler(async (req, res) => {
 
     if (!group || group.isDeleted) {
         res.status(404);
-        throw new Error("Group not found");
+        throw new Error('Group not found');
     }
 
     if (group.createdBy.toString() !== req.user._id.toString()) {
         res.status(403);
-        throw new Error("Only the group creator can generate invites");
+        throw new Error('Only the group creator can generate invites');
     }
 
     const token = generateInviteToken(group._id, req.user._id);
@@ -187,8 +231,8 @@ const createInvite = asyncHandler(async (req, res) => {
     res.json({ inviteLink: `${process.env.FRONTEND_URL}/join/${token}` });
 });
 
-
 module.exports = {
+    getAllGroups,
     createGroup,
     getGroups,
     getGroupById,

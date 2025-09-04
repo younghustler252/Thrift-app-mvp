@@ -6,15 +6,15 @@ const Transaction = require('../models/Transaction');
 // @access  Private
 const getAllTransactions = asyncHandler(async (req, res) => {
     const { group, type, status } = req.query;
-  
+
     const filter = {};
     if (group) filter.group = group;
 
     // Better consistency: use your schema's "type" field directly
-    if (type) filter.type = type; 
+    if (type) filter.type = type;
 
     if (status) filter.status = status;
-        
+
     const transactions = await Transaction.find(filter)
         .populate('user', 'name email')
         .populate('group', 'name')
@@ -23,8 +23,8 @@ const getAllTransactions = asyncHandler(async (req, res) => {
             select: 'amount cycle status',
             populate: [
                 { path: 'user', select: 'name email' },
-                { path: 'receiver', select: 'name email' }
-            ]
+                { path: 'receiver', select: 'name email' },
+            ],
         })
         .sort({ createdAt: -1 });
 
@@ -39,7 +39,7 @@ const getMyTransactions = asyncHandler(async (req, res) => {
 
     if (!userId) {
         res.status(401);
-        throw new Error("Not authorized");
+        throw new Error('Not authorized');
     }
 
     const transactions = await Transaction.find({ user: userId })
@@ -47,7 +47,7 @@ const getMyTransactions = asyncHandler(async (req, res) => {
         .populate({
             path: 'referenceId',
             select: 'amount cycle status',
-            populate: { path: 'group', select: 'name' }
+            populate: { path: 'group', select: 'name' },
         })
         .sort({ createdAt: -1 });
 
@@ -68,8 +68,8 @@ const getTransactionById = asyncHandler(async (req, res) => {
             populate: [
                 { path: 'user', select: 'name email' },
                 { path: 'receiver', select: 'name email' },
-                { path: 'group', select: 'name' }
-            ]
+                { path: 'group', select: 'name' },
+            ],
         });
 
     if (!transaction) {
@@ -83,5 +83,5 @@ const getTransactionById = asyncHandler(async (req, res) => {
 module.exports = {
     getAllTransactions,
     getMyTransactions,
-    getTransactionById
+    getTransactionById,
 };

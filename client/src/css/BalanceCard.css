@@ -1,0 +1,75 @@
+/* BalanceCard.css */
+
+.balance-card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 16px;
+    width: 100%;
+    max-width: 360px;
+    margin: 10px auto;
+    font-family: system-ui, sans-serif;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.balance-header h3 {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6b7280; /* muted text */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Balance main row */
+.balance-main {
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f9fafb;
+    border-radius: 10px;
+    padding: 14px;
+}
+
+.balance-main .label {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #6b7280;
+}
+
+.balance-main .value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #16a34a; /* green balance */
+}
+
+/* Contributions & Payouts row */
+.balance-row {
+    margin-top: 14px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.balance-item {
+    flex: 1;
+    background: #f8f9fb;
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.balance-item .label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #6b7280;
+}
+
+.balance-item .value {
+    margin-top: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111827;
+}

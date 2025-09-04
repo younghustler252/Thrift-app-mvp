@@ -2,21 +2,24 @@
 const express = require('express');
 const router = express.Router();
 const {
-  createGroup,
-  getGroups,
-  getGroupById,
-  joinGroup,
-  updateGroup,
-  deleteGroup,
-  createInvite
+    getAllGroups,
+    createGroup,
+    getGroups,
+    getGroupById,
+    joinGroup,
+    updateGroup,
+    deleteGroup,
+    createInvite,
 } = require('../controllers/groupController');
-const { protect, isCreator } = require('../middleware/authMiddleware');
+const { protect, isCreator, admin } = require('../middleware/authMiddleware');
 
 // Create group
 router.post('/', protect, createGroup);
 
 // Get all groups user belongs to
 router.get('/', protect, getGroups);
+
+router.get('/all', protect, admin, getAllGroups);
 
 // Get specific group
 router.get('/:id', protect, getGroupById);

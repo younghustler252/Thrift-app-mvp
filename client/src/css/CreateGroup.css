@@ -1,0 +1,23 @@
+.group-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 16px;
+}
+
+.group-form input,
+.group-form textarea,
+.group-form select {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+}
+
+.group-form textarea {
+    min-height: 80px;
+}
+
+.group-form button {
+    margin-top: 1rem;
+}

@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const logger = require('./middleware/logger');
-const errorHandler = require('./middleware/errorHandler');
+const { errorHandler, notFound } = require('./middleware/errorHandler');
 
 // Route files
 const authRoutes = require('./routes/authRoutes');
@@ -16,6 +16,7 @@ const transactionRoutes = require('./routes/transactionRoutes');
 const contributionRoutes = require('./routes/contributionRoutes');
 const payoutRoutes = require('./routes/payoutRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
+const balanceRoutes = require('./routes/balanceRoutes');
 
 dotenv.config();
 connectDB();
@@ -29,23 +30,25 @@ app.use(logger);
 
 // Route Middleware
 app.use('/api/auth', authRoutes);
-app.use('/api/user', userRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/groups', groupRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/contributions', contributionRoutes);
 app.use('/api/payouts', payoutRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/balance', balanceRoutes);
 
 // Root endpoint
 app.get('/', (req, res) => {
-  res.send('✅ Thrift App Backend is running...');
+    res.send('✅ Thrift App Backend is running...');
 });
 
-// Error handler (should come after routes)
 app.use(errorHandler);
+
+app.use(notFound);
 
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`);
+    console.log(`🚀 Server running at http://localhost:${PORT}`);
 });

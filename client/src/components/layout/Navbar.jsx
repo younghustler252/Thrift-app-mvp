@@ -1,33 +1,43 @@
-import { Link, useLocation } from "react-router-dom";
-import IconRenderer from "../../assets/icons/IconRenderer";
-import '../../css/Navbar.css'
+// src/components/Navbar.jsx
+
+import { Link, useLocation } from 'react-router-dom';
+import IconRenderer from '@/assets/icons/IconRenderer';
+import '@/css/Navbar.css';
 
 function Navbar() {
     const location = useLocation();
 
-    const Navitem = [
-        { path: "/dashboard", icon: "FaHome", label: "Home" },
-        { path: "/groups", icon: "FaUsers", label: "Group" },
-        { path: "/history", icon: "FaHistory", label: "History" },
-        { path: "/profile", icon: "FaUser", label: "me" },
+    const NavItems = [
+        { path: '/dashboard', icon: 'Home', label: 'Home' },
+        { path: '/groups', icon: 'Users', label: 'Groups' },
+        { path: '/history', icon: 'History', label: 'History' },
+        { path: '/profile', icon: 'User', label: 'Me' },
     ];
 
     return (
-        <nav className="bottom-nav">
-            {Navitem.map((item) => {
-                const isActive = location.pathname === item.path;
+        <nav className="bottom-navbar">
+            <ul className="navbar-menu">
+                {NavItems.map((item) => {
+                    const isActive = location.pathname === item.path;
 
-                return (
-                    <Link
-                        key={item.path}
-                        to={item.path}
-                        className={`nav-links ${isActive ? "active" : ""}`}
-                    >
-                        <IconRenderer name={item.icon} size={20} color={isActive ? "black" : "white"} />
-                        <span className="nav-label">{item.label}</span>
-                    </Link>
-                );
-            })}
+                    return (
+                        <li key={item.path} className="navbar-item">
+                            <Link
+                                to={item.path}
+                                className={`navbar-link ${isActive ? 'active' : ''}`}>
+                                <IconRenderer
+                                    name={item.icon}
+                                    size={22}
+                                    color={isActive ? '#00b386' : '#999'}
+                                />
+                                <span className="navbar-label">
+                                    {item.label}
+                                </span>
+                            </Link>
+                        </li>
+                    );
+                })}
+            </ul>
         </nav>
     );
 }

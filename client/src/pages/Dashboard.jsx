@@ -1,21 +1,31 @@
-import { useEffect, useState } from 'react';
+// /pages/Dashboard.jsx
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useAuth } from '@/context/AuthProvider';
+import Loader from '@/components/common/Loader';
+import AdminDashboard from './dashboard/AdminDashboard';
+import UserDashboard from './dashboard/USerDashboard';
+import { routes } from '@/routes/route';
 
-function Dashboard() {
-  const [userName, setUserName] = useState('');
+const Dashboard = () => {
+    const navigate = useNavigate();
+    const { user, loading } = useAuth();
 
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    if (user && user.name) {
-      setUserName(user.name);
+    useEffect(() => {
+        if (!loading && !user) {
+            navigate(routes.login); // ✅ Correct usage
+        }
+    }, [user, loading, navigate]);
+
+    if (loading) return <Loader />;
+
+    if (!user) return null; // Or a fallback like <Loader /> or nothing while redirecting
+
+    if (user.role === 'admin') {
+        return <AdminDashboard />;
     }
-  }, []);
 
-  return (
-    <div>
-      <h2>Welcome, {userName || 'User'} 👋</h2>
-      {/* More dashboard content */}
-    </div>
-  );
-}
+    return <UserDashboard />;
+};
 
 export default Dashboard;
